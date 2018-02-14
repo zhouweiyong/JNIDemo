@@ -66,7 +66,7 @@ Java_com_vst_jnidemo_JniTest_tObj(JNIEnv *env, jobject instance, jobject userBea
     //返回对象给java代码
     return userBean;
 }
-
+//生成User对象
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_vst_jnidemo_JniTest_getObj(JNIEnv *env, jobject instance) {
@@ -89,7 +89,28 @@ Java_com_vst_jnidemo_JniTest_getObj(JNIEnv *env, jobject instance) {
 
     return userBean;
 }
+//生成User对象
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_com_vst_jnidemo_JniTest_gObj(JNIEnv *env, jobject instance) {
+    //获得的UserBean类
+    jclass clazz = env->FindClass("");
+    //为新的java类对象分配内存
+    jobject userBean = env->AllocObject(clazz);
+    //获取UserBean属性id
+    jfieldID idFieldID = env->GetFieldID(clazz, "id", "J");
+    jfieldID nameFieldID = env->GetFieldID(clazz, "name", "Ljava/lang/String;");
+    jfieldID ageFieldID = env->GetFieldID(clazz, "age", "I");
+    jfieldID isManFieldID = env->GetFieldID(clazz, "isMan", "Z");
 
+    env->SetLongField(userBean, idFieldID, 1006L);
+    env->SetObjectField(userBean, nameFieldID, env->NewStringUTF("Jackkk"));
+    env->SetIntField(userBean, ageFieldID, 66);
+    env->SetBooleanField(userBean, isManFieldID, false);
+
+    return userBean;
+
+}
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_vst_jnidemo_JniTest_tList(JNIEnv *env, jobject instance, jobject list) {
@@ -100,6 +121,19 @@ Java_com_vst_jnidemo_JniTest_tList(JNIEnv *env, jobject instance, jobject list) 
     jmethodID listSizeMethodID = env->GetMethodID(listClazz, "size", "()I");
     jint len = env->CallIntMethod(list, listSizeMethodID);
     for (int i = 0; i < len; i++) {
-        jobject userBean = env->CallObjectMethod(list,listGetMethodID,i);
+        jobject userBean = env->CallObjectMethod(list, listGetMethodID, i);
+        jclass userClazz = env->GetObjectClass(userBean);
+        jmethodID userIdMethodID = env->GetMethodID(userClazz, "getId", "()J");
+        jmethodID userNameMethodID = env->GetMethodID(userClazz, "getName", "()Ljava/lang/String;");
+        jmethodID userAgeMethodID = env->GetMethodID(userClazz, "getAge", "()I");
+        jmethodID userIsManMethodID = env->GetMethodID(userClazz, "isMan", "()Z");
+
+        jlong id = env->CallLongMethod(userBean, userIdMethodID);
+        jstring name = (jstring) env->CallObjectMethod(userBean, userNameMethodID);
+        jint age = env->CallIntMethod(userBean, userAgeMethodID);
+        jboolean isMan = env->CallBooleanMethod(userBean, userIsManMethodID);
+
+        const char *nameStr = env->GetStringUTFChars(name, 0);
+        LOGI("name=%s age=%d isMan=%d", nameStr, age, isMan);
     }
 }

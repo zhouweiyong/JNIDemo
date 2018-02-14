@@ -22,14 +22,19 @@ public class JniTest {
     //传递整型，返回整型
     public native int total(int a, int b);
 
-    //传递一个回调函数
 
+    //传递自定义对象，返回自定义对象
     public native UserBean tObj(UserBean userBean);
 
+    //获取c中生成的对象
     public native UserBean getObj();
 
+    public native UserBean gObj();
+
+    //传递集合，返回集合
     public native void tList(List<UserBean> list);
 
+    //传递一个回调函数
     public void helloFromJava() {
         System.out.println("hello from java ");
     }
