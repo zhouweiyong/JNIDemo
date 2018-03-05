@@ -12,7 +12,8 @@
 // 定义error信息
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG,__VA_ARGS__)
 
-
+//---------------------------------java调用native中的方法start-----------------------------------------------------
+//传递字符串
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_vst_jnidemo_JniTest_sayHello(JNIEnv *env, jobject instance) {
@@ -20,6 +21,7 @@ Java_com_vst_jnidemo_JniTest_sayHello(JNIEnv *env, jobject instance) {
     return env->NewStringUTF("Hello Jni!!!");
 }
 
+//传递字符串
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_vst_jnidemo_JniTest_join(JNIEnv *env, jobject instance, jstring str_) {
@@ -33,12 +35,14 @@ Java_com_vst_jnidemo_JniTest_join(JNIEnv *env, jobject instance, jstring str_) {
     env->ReleaseStringUTFChars(str_, str);
     return env->NewStringUTF(s.c_str());
 }
+//传递整型，返回整型
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_vst_jnidemo_JniTest_total__II(JNIEnv *env, jobject instance, jint a, jint b) {
     int rs = a + b;
     return rs;
 }
+//传递自定义对象，改变参数值后返回java
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_vst_jnidemo_JniTest_tObj(JNIEnv *env, jobject instance, jobject userBean) {
@@ -89,20 +93,21 @@ Java_com_vst_jnidemo_JniTest_getObj(JNIEnv *env, jobject instance) {
 
     return userBean;
 }
-//生成User对象
+//通过函数生成User对象，并返回给java
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_vst_jnidemo_JniTest_gObj(JNIEnv *env, jobject instance) {
     //获得的UserBean类
-    jclass clazz = env->FindClass("");
-    //为新的java类对象分配内存
-    jobject userBean = env->AllocObject(clazz);
+    jclass clazz = env->FindClass("com/vst/jnidemo/UserBean");
+    //生成对象
+    jmethodID initMethodID = env->GetMethodID(clazz, "<init>", "()V");
+    jobject userBean = env->NewObject(clazz, initMethodID);
     //获取UserBean属性id
     jfieldID idFieldID = env->GetFieldID(clazz, "id", "J");
     jfieldID nameFieldID = env->GetFieldID(clazz, "name", "Ljava/lang/String;");
     jfieldID ageFieldID = env->GetFieldID(clazz, "age", "I");
     jfieldID isManFieldID = env->GetFieldID(clazz, "isMan", "Z");
-
+    //设置参数
     env->SetLongField(userBean, idFieldID, 1006L);
     env->SetObjectField(userBean, nameFieldID, env->NewStringUTF("Jackkk"));
     env->SetIntField(userBean, ageFieldID, 66);
@@ -111,8 +116,10 @@ Java_com_vst_jnidemo_JniTest_gObj(JNIEnv *env, jobject instance) {
     return userBean;
 
 }
+
+//传递集合，返回集合
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_vst_jnidemo_JniTest_tList(JNIEnv *env, jobject instance, jobject list) {
     //获取List对象的class
     jclass listClazz = env->GetObjectClass(list);
@@ -136,4 +143,35 @@ Java_com_vst_jnidemo_JniTest_tList(JNIEnv *env, jobject instance, jobject list) 
         const char *nameStr = env->GetStringUTFChars(name, 0);
         LOGI("name=%s age=%d isMan=%d", nameStr, age, isMan);
     }
+    return list;
 }
+//---------------------------------java调用native中的方法end-----------------------------------------------------
+
+
+//---------------------------------native调用java中的方法start-----------------------------------------------------
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_vst_jnidemo_JniTest_helloFromC(JNIEnv *env, jobject instance) {
+    jclass clazz = env->FindClass("com/vst/jnidemo/JniTest");
+    jmethodID methodID = env->GetMethodID(clazz, "helloFromJava",
+                                          "(Ljava/lang/String;)Ljava/lang/String;");
+    const char *ar = "tom";
+    jstring str = (jstring) env->CallObjectMethod(instance, methodID, env->NewStringUTF(ar));
+    const char *s = env->GetStringUTFChars(str, false);
+
+    LOGI("%s", s);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_vst_jnidemo_JniTest_addFromC(JNIEnv *env, jobject instance) {
+
+    jclass clazz = env->FindClass("com/vst/jnidemo/JniTest");
+    jmethodID methodID = env->GetMethodID(clazz, "addFromJava",
+                                          "(II)I");
+    jint i = env->CallIntMethod(instance, methodID, 20, 36);
+    LOGI("result is %d", i);
+}
+
+//---------------------------------native调用java中的方法end-----------------------------------------------------

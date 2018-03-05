@@ -13,6 +13,7 @@ public class JniTest {
         System.loadLibrary("native-lib");
     }
 
+    //---------------------------------java调用native中的方法start-----------------------------------------------------
     //返回字符串
     public native String sayHello();
 
@@ -32,15 +33,22 @@ public class JniTest {
     public native UserBean gObj();
 
     //传递集合，返回集合
-    public native void tList(List<UserBean> list);
+    public native List<UserBean> tList(List<UserBean> list);
 
     //传递一个回调函数
-    public void helloFromJava() {
-        System.out.println("hello from java ");
+
+    public native void helloFromC();
+
+    public native void addFromC();
+    //---------------------------------java调用native中的方法end-----------------------------------------------------
+
+    public String helloFromJava(String str) {
+        System.out.println("hello from java " + str);
+        return "Hello Java!!!";
     }
 
-    public void printString(String s) {
-        System.out.println("in java code " + s);
+    public int addFromJava(int a, int b) {
+        return a + b;
     }
 
 }

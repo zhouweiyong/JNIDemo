@@ -42,8 +42,26 @@
         android:text="j2c->获取c语言生成的对象" />
 
     <Button
+        android:id="@+id/btn7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="j2c->获取c语言生成的对象2" />
+
+    <Button
         android:id="@+id/btn6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="j2c->传递集合" />
+
+    <Button
+        android:id="@+id/btn8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="c2j->hello" />
+
+    <Button
+        android:id="@+id/btn9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="c2j->add" />
 </LinearLayout>

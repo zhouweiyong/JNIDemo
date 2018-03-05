@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn4;
     private Button btn5;
     private Button btn6;
+    private Button btn7;
+    private Button btn8;
+    private Button btn9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn5.setOnClickListener(this);
         btn6 = (Button) findViewById(R.id.btn6);
         btn6.setOnClickListener(this);
+        btn7 = (Button) findViewById(R.id.btn7);
+        btn7.setOnClickListener(this);
+        btn8 = (Button) findViewById(R.id.btn8);
+        btn8.setOnClickListener(this);
+        btn9 = (Button) findViewById(R.id.btn9);
+        btn9.setOnClickListener(this);
     }
 
     @Override
@@ -73,7 +83,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     UserBean bean = new UserBean(i, "tom" + i, 30 + i * 2, i % 2 == 0 ? true : false);
                     list.add(bean);
                 }
-                jniTest.tList(list);
+                List<UserBean> userBeans = jniTest.tList(list);
+                Log.i("zwy", "java>>>" + userBeans.get(1).getId() + " " + userBeans.get(1).getName() + " " + userBeans.get(1).getAge());
+                break;
+            case R.id.btn7:
+                UserBean userBean1 = jniTest.gObj();
+                Log.i("zwy", "java>>>" + userBean1.getId() + " " + userBean1.getName() + " " + userBean1.getAge());
+                break;
+            case R.id.btn8:
+                jniTest.helloFromC();
+                break;
+            case R.id.btn9:
+                jniTest.addFromC();
                 break;
         }
     }
