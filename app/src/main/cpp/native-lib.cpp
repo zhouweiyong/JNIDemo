@@ -174,4 +174,12 @@ Java_com_vst_jnidemo_JniTest_addFromC(JNIEnv *env, jobject instance) {
     LOGI("result is %d", i);
 }
 
-//---------------------------------native调用java中的方法end-----------------------------------------------------
+//---------------------------------native调用java中的方法end-----------------------------------------------------extern "C"
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_vst_jnidemo_JniTest_call(JNIEnv *env, jobject instance, jobject callBack) {
+    jclass clazz = env->FindClass("com/vst/jnidemo/CallBack");
+    jmethodID methodID = env->GetMethodID(clazz, "result", "(Ljava/lang/String;)V");
+    const char *ar = "Hello CallBack";
+    env->CallVoidMethod(callBack, methodID, env->NewStringUTF(ar));
+}

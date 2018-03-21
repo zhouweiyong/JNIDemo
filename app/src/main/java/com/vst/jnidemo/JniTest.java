@@ -36,6 +36,7 @@ public class JniTest {
     public native List<UserBean> tList(List<UserBean> list);
 
     //传递一个回调函数
+    public native void call(CallBack callBack);
 
     public native void helloFromC();
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, CallBack {
 
     private TextView tv_result;
     private Button btn1;
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn7;
     private Button btn8;
     private Button btn9;
+    private Button btn10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn8.setOnClickListener(this);
         btn9 = (Button) findViewById(R.id.btn9);
         btn9.setOnClickListener(this);
+        btn10 = (Button) findViewById(R.id.btn10);
+        btn10.setOnClickListener(this);
     }
 
     @Override
@@ -96,6 +99,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn9:
                 jniTest.addFromC();
                 break;
+            case R.id.btn10:
+                jniTest.call(this);
+                break;
         }
+    }
+
+    @Override
+    public void result(String s) {
+        Log.i("zwy", "java>>>" + s);
     }
 }
